@@ -71,6 +71,46 @@ md.use((md) => {
   };
 });
 
+// Inline math: $...$
+md.inline.ruler.after("escape", "math_inline", (state, silent) => {
+  const src = state.src;
+  const pos = state.pos;
+  const max = state.posMax;
+
+  if (src.charCodeAt(pos) !== 0x24) return false;
+  // skip $$
+  if (pos + 1 < max && src.charCodeAt(pos + 1) === 0x24) return false;
+  // $ followed by space is not math (e.g. "$ 100")
+  if (pos + 1 < max && src.charCodeAt(pos + 1) === 0x20) return false;
+
+  for (let i = pos + 1; i < max; i++) {
+    if (src.charCodeAt(i) === 0x24 && src.charCodeAt(i - 1) !== 0x5c) {
+      // closing $ must not be preceded by space
+      if (src.charCodeAt(i - 1) !== 0x20) {
+        if (!silent) {
+          const token = state.push("math_inline", "", 0);
+          token.content = src.slice(pos + 1, i);
+        }
+        state.pos = i + 1;
+        return true;
+      }
+      return false;
+    }
+  }
+  return false;
+});
+
+md.renderer.rules.math_inline = (tokens, idx) => {
+  try {
+    return katex.renderToString(tokens[idx].content, {
+      displayMode: false,
+      throwOnError: false,
+    });
+  } catch {
+    return escapeHtml(`$${tokens[idx].content}$`);
+  }
+};
+
 md.use((md) => {
   md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     tokens[idx].attrPush(["target", "_blank"]);
@@ -81,7 +121,27 @@ md.use((md) => {
 
 function renderMarkdown() {
   if (!contentRef.value) return;
-  const html = md.render(props.content || "");
+  let raw = props.content || "";
+
+  // Pre-process display math $$...$$
+  const displayMath = [];
+  raw = raw.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
+    const idx = displayMath.length;
+    displayMath.push(formula.trim());
+    return `\n\n[MATH_BLOCK_${idx}]\n\n`;
+  });
+
+  let html = md.render(raw);
+
+  // Replace display math placeholders with KaTeX
+  html = html.replace(/<p>\[MATH_BLOCK_(\d+)\]<\/p>/g, (_, idx) => {
+    try {
+      return `<div class="text-center my-4">${katex.renderToString(displayMath[parseInt(idx)], { displayMode: true, throwOnError: false })}</div>`;
+    } catch {
+      return `<pre><code>${escapeHtml(displayMath[parseInt(idx)])}</code></pre>`;
+    }
+  });
+
   contentRef.value.innerHTML = html;
 
   const copyBtns = contentRef.value.querySelectorAll(".copy-btn");
