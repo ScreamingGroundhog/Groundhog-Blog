@@ -65,7 +65,7 @@ import api from "../api";
 
 const about = ref({
   nickname: "Admin",
-  description: "一个热爱技术的开发者",
+  description: "Nothing",
   github: "https://github.com",
 });
 

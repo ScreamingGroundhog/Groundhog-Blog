@@ -101,6 +101,6 @@ def get_about():
     return jsonify({
         "nickname": user.nickname if user else "Admin",
         "avatar": user.avatar if user else "",
-        "description": "一个热爱技术的开发者",
-        "github": "https://github.com",
+        "description": "一只渴望成为技术大牛的土拨鼠",
+        "github": "https://github.com/ScreamingGroundhog",
     }), 200
