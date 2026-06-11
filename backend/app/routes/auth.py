@@ -33,6 +33,7 @@ def login():
             "nickname": user.nickname,
             "avatar": user.avatar,
             "description": user.description,
+            "blog_description": user.blog_description,
         }
     }), 200
 
@@ -72,6 +73,7 @@ def register():
             "nickname": user.nickname,
             "avatar": user.avatar,
             "description": user.description,
+            "blog_description": user.blog_description,
         }
     }), 201
 
@@ -90,6 +92,7 @@ def get_me():
         "nickname": user.nickname,
         "avatar": user.avatar,
         "description": user.description,
+        "blog_description": user.blog_description,
     }), 200
 
 
@@ -118,6 +121,8 @@ def update_me():
         user.avatar = data["avatar"]
     if "description" in data:
         user.description = data["description"]
+    if "blog_description" in data:
+        user.blog_description = data["blog_description"]
     if "new_password" in data and data["new_password"]:
         old_password = data.get("old_password", "")
         if not old_password or not check_password_hash(user.password_hash, old_password):
@@ -133,4 +138,5 @@ def update_me():
         "nickname": user.nickname,
         "avatar": user.avatar,
         "description": user.description,
+        "blog_description": user.blog_description,
     }), 200

@@ -17,7 +17,7 @@
     <div class="bg-gray-900 rounded-lg p-6 border border-gray-800 space-y-4">
       <h3 class="text-lg font-semibold text-white mb-3">关于本博客</h3>
       <p class="text-gray-400 leading-relaxed">
-        {{ about.description || "这是一个基于 Vue 3 + Flask + MySQL 构建的简易个人博客。" }}
+        {{ about.blog_description || "这是一个基于 Vue 3 + Flask + MySQL 构建的简易个人博客。" }}
       </p>
       <div class="flex gap-3 pt-2">
         <a
@@ -71,6 +71,7 @@ import api from "../api";
 const about = ref({
   nickname: "Admin",
   description: "",
+  blog_description: "",
   github: "https://github.com",
 });
 

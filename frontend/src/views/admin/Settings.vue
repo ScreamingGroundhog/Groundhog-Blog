@@ -22,6 +22,17 @@
       ></textarea>
     </div>
 
+    <!-- Blog Description -->
+    <div class="mb-6">
+      <label class="block text-sm text-gray-400 mb-2">博客简介</label>
+      <textarea
+        v-model="blogDescription"
+        rows="4"
+        placeholder="介绍一下你的博客..."
+        class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+      ></textarea>
+    </div>
+
     <!-- Avatar -->
     <div class="mb-6">
       <label class="block text-sm text-gray-400 mb-2">头像</label>
@@ -86,6 +97,7 @@ const auth = useAuthStore();
 const nickname = ref("");
 const avatar = ref("");
 const description = ref("");
+const blogDescription = ref("");
 const oldPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
@@ -103,6 +115,7 @@ onMounted(() => {
   nickname.value = auth.user?.nickname || "";
   avatar.value = auth.user?.avatar || "";
   description.value = auth.user?.description || "";
+  blogDescription.value = auth.user?.blog_description || "";
 });
 
 async function handleAvatarUpload(e) {
@@ -123,7 +136,7 @@ async function handleAvatarUpload(e) {
 async function save() {
   saving.value = true;
   try {
-    const payload = { nickname: nickname.value, avatar: avatar.value, description: description.value };
+    const payload = { nickname: nickname.value, avatar: avatar.value, description: description.value, blog_description: blogDescription.value };
 
     if (newPassword.value) {
       if (!oldPassword.value) {

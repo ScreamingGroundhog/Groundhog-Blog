@@ -18,6 +18,7 @@ class User(db.Model):
     nickname = db.Column(db.String(80), default="")
     avatar = db.Column(db.String(256), default="")
     description = db.Column(db.String(256), default="")
+    blog_description = db.Column(db.String(512), default="")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

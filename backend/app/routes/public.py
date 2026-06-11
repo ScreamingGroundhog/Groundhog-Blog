@@ -104,6 +104,7 @@ def get_about():
         "nickname": user.nickname if user else "Admin",
         "avatar": "/api/public/avatar" if (user and user.avatar) else "",
         "description": user.description if user else "",
+        "blog_description": user.blog_description if user else "",
         "github": "https://github.com/ScreamingGroundhog",
     }), 200
 
