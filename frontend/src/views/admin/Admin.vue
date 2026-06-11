@@ -3,7 +3,7 @@
     <aside class="w-56 bg-gray-900 border-r border-gray-800 shrink-0 min-h-screen">
       <div class="p-4 border-b border-gray-800">
         <router-link to="/admin" class="text-lg font-bold text-blue-400">
-          &lt;管理后台 /&gt;
+          管理后台
         </router-link>
       </div>
       <nav class="p-3 space-y-1">
@@ -34,6 +34,13 @@
           active-class="bg-gray-800 text-white"
         >
           文件管理
+        </router-link>
+        <router-link
+          to="/admin/settings"
+          class="flex items-center gap-2 px-3 py-2 rounded text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          active-class="bg-gray-800 text-white"
+        >
+          个人设置
         </router-link>
         <div class="border-t border-gray-800 my-2"></div>
         <router-link

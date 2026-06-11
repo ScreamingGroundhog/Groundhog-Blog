@@ -1,4 +1,6 @@
-from flask import request, jsonify
+import os
+
+from flask import request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import User
@@ -30,6 +32,7 @@ def login():
             "username": user.username,
             "nickname": user.nickname,
             "avatar": user.avatar,
+            "description": user.description,
         }
     }), 200
 
@@ -68,6 +71,7 @@ def register():
             "username": user.username,
             "nickname": user.nickname,
             "avatar": user.avatar,
+            "description": user.description,
         }
     }), 201
 
@@ -85,6 +89,7 @@ def get_me():
         "username": user.username,
         "nickname": user.nickname,
         "avatar": user.avatar,
+        "description": user.description,
     }), 200
 
 
@@ -103,9 +108,23 @@ def update_me():
     if "nickname" in data:
         user.nickname = data["nickname"]
     if "avatar" in data:
+        old = user.avatar or ""
+        new = data["avatar"] or ""
+        if old != new and old.startswith("/api/files/"):
+            old_name = old.rsplit("/", 1)[-1]
+            old_path = os.path.join(current_app.config["UPLOAD_FOLDER"], old_name)
+            if os.path.isfile(old_path):
+                os.remove(old_path)
         user.avatar = data["avatar"]
-    if "password" in data and data["password"]:
-        user.password_hash = generate_password_hash(data["password"])
+    if "description" in data:
+        user.description = data["description"]
+    if "new_password" in data and data["new_password"]:
+        old_password = data.get("old_password", "")
+        if not old_password or not check_password_hash(user.password_hash, old_password):
+            return jsonify({"error": "原密码错误"}), 403
+        if len(data["new_password"]) < 6:
+            return jsonify({"error": "新密码长度不能少于6位"}), 400
+        user.password_hash = generate_password_hash(data["new_password"])
 
     db.session.commit()
     return jsonify({
@@ -113,4 +132,5 @@ def update_me():
         "username": user.username,
         "nickname": user.nickname,
         "avatar": user.avatar,
+        "description": user.description,
     }), 200

@@ -17,6 +17,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     nickname = db.Column(db.String(80), default="")
     avatar = db.Column(db.String(256), default="")
+    description = db.Column(db.String(256), default="")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 

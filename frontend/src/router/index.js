@@ -65,6 +65,11 @@ const routes = [
         name: "AdminFiles",
         component: () => import("../views/admin/Files.vue"),
       },
+      {
+        path: "settings",
+        name: "AdminSettings",
+        component: () => import("../views/admin/Settings.vue"),
+      },
     ],
   },
 ];

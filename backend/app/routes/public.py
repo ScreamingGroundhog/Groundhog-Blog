@@ -1,4 +1,6 @@
-from flask import request, jsonify
+import os
+
+from flask import request, jsonify, current_app, send_from_directory
 from sqlalchemy.orm import joinedload
 from app.models import Article, Category, Tag, User
 from app import db
@@ -100,7 +102,21 @@ def get_about():
     user = User.query.first()
     return jsonify({
         "nickname": user.nickname if user else "Admin",
-        "avatar": user.avatar if user else "",
-        "description": "一只渴望成为技术大牛的土拨鼠",
+        "avatar": "/api/public/avatar" if (user and user.avatar) else "",
+        "description": user.description if user else "",
         "github": "https://github.com/ScreamingGroundhog",
     }), 200
+
+
+@public_bp.route("/avatar", methods=["GET"])
+def get_avatar():
+    user = User.query.first()
+    if not user or not user.avatar:
+        return jsonify({"error": "未设置头像"}), 404
+
+    avatar = user.avatar
+    if avatar.startswith("/api/files/"):
+        filename = avatar.rsplit("/", 1)[-1]
+        return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)
+
+    return jsonify({"error": "未设置头像"}), 404

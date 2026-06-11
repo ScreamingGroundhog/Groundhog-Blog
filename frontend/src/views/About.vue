@@ -1,18 +1,23 @@
 <template>
   <div class="max-w-2xl mx-auto px-4 py-16">
     <div class="text-center mb-10">
-      <div class="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center">
-        <span class="text-3xl text-gray-400 font-bold">{{ about.nickname?.charAt(0) || "?" }}</span>
+      <div class="w-24 h-24 rounded-full bg-gray-800 mx-auto mb-4 flex items-center justify-center overflow-hidden">
+        <img
+          v-if="about.avatar"
+          :src="about.avatar"
+          :alt="about.nickname"
+          class="w-full h-full object-cover"
+        />
+        <span v-else class="text-3xl text-gray-400 font-bold">{{ about.nickname?.charAt(0) || "?" }}</span>
       </div>
       <h1 class="text-2xl font-bold text-white mb-2">{{ about.nickname }}</h1>
-      <p class="text-gray-400">{{ about.description }}</p>
+      <p class="text-gray-400">{{ about.description || "这个人很懒，什么都没写..." }}</p>
     </div>
 
     <div class="bg-gray-900 rounded-lg p-6 border border-gray-800 space-y-4">
-      <h3 class="text-lg font-semibold text-white mb-3">关于本站</h3>
+      <h3 class="text-lg font-semibold text-white mb-3">关于我</h3>
       <p class="text-gray-400 leading-relaxed">
-        这是一个基于 Vue 3 + Flask + MySQL 构建的个人技术博客。
-        专注于技术沉淀与知识分享，追求极致的阅读体验。
+        {{ about.description || "这是一个基于 Vue 3 + Flask + MySQL 构建的个人技术博客。专注于技术沉淀与知识分享，追求极致的阅读体验。" }}
       </p>
       <div class="flex gap-3 pt-2">
         <a
@@ -65,7 +70,7 @@ import api from "../api";
 
 const about = ref({
   nickname: "Admin",
-  description: "Nothing",
+  description: "",
   github: "https://github.com",
 });
 
